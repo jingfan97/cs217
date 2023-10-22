@@ -1,0 +1,33 @@
+--Q1. How many races happened in UK between 1990 and 2005 (both side inclusive)?
+select count(*) from races 
+where year <= 2005
+    and year >= 1990 ;
+--Q2. How many pole has Lewis Hamilton won? (pole means position 1 in the qualifying game)
+select count(*) from results 
+join drivers on drivers.driverId = results.driverId
+where results.driverId = "1"
+    and position <= "1";
+--Q3. Which driver has been disqualified from the races the most? Print the name and the count. Hint: disqualified is a status in the status table.
+select forename, surname, count(results.statusId) from drivers
+join results on drivers.driverId = results.driverId
+where results.statusId = "2"
+group by results.driverId, results.statusId
+order by count(results.statusId) DESC
+limit 1;
+
+--Q4. Which country hosts the race that has the most pitstops in one race? Print the country name, race name, race year, and the total number of pitstops in that race. 
+--Note: Pitstop is something that happens during a race to, e.g., change tires. In each race, any driver can stop for 1 or more times. 
+select country, c.name, r.year, count(p.stop) from circuits c
+join races r on r.circuitID = c.circuitID
+join pitstops p on p.raceID = r.raceID
+group by p.raceID, p.stop
+order by count(p.stop) DESC
+limit 1;
+
+--Q5. Print the final constructor standing in 2013 ordered from highest to lowest points. Print the constructor names and the points.
+--Hint: The final point of a constructor is the total number of points this constructor gets over all races that year. 
+--The points in constructor_results represent the points earned in a single race. The points in constructor_standings represent the accumulative point up to that race.
+--The result should be consistent with https://www.formula1.com/en/results.html/2013/team.html
+
+
+

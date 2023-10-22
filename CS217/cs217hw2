@@ -1,0 +1,25 @@
+--8. For each department, show the info of each department chair. In detail, show their staffid, names, salary and the hire date.
+
+select StaffID, StfFirstName, StfLastname,Salary, DateHired from Staff
+join Departments on Departments.DeptChair = Staff.StaffID;
+
+--9. For every Student, print their first name, last name, major name, and the number of classes they took (only consider the classes that are “Enrolled” or “Completed” by the students).
+select StudFirstName, StudLastName, m.Major, COUNT(ss.ClassStatus) from Students s
+join Majors m on m.majorID = s.studMajor
+join Student_Schedules ss on ss.studentID = s.StudentID
+WHERE ss.ClassStatus < "3"
+GROUP BY StudFirstName;
+
+--10. Find all classes that satisfy all of these conditions: 1) are scheduled in the building “College Center”; 2) happen in semester 1,
+-- and 3) meet more than 2 days a week; 4) have at least one student in the class (“Enrolled” or “Completed”). 
+--Print both the classid and the number of the credit of the class, sort them by classid in ascending order and make sure to deduplicate.
+
+select distinct c.ClassID, c.Credits
+from Classes c
+join Class_Rooms r on r.ClassRoomID = c.ClassRoomID
+join Buildings b on b.BuildingCode = r.BuildingCode
+join Student_Schedules ss on ss.ClassID = c.ClassID
+WHERE BuildingName = "College Center"
+      and SemesterNumber < 2
+      and (MondaySchedule+TuesdaySchedule+WednesdaySchedule+ThursdaySchedule+FridaySchedule+SaturdaySchedule)>=2
+      and ClassStatus < 3
